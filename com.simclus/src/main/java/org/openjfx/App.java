@@ -1,9 +1,12 @@
 package org.openjfx;
 
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,16 +19,30 @@ public class App extends Application {
     private static Scene scene;
 
     @Override
-    public void start(Stage stage) throws IOException {
-        /*scene = new Scene(loadFXML("primary"));
-        stage.setScene(scene);
-        stage.show();*/
+    public void start(Stage primaryStage) throws IOException {
 
-        scene = new Scene(loadFXML("testview"));
+        /*scene = new Scene(loadFXML("testview"));
         stage.setScene(scene);
         stage.setTitle("Test");
-        stage.show();
+        stage.show();*/
+
+        BorderPane root = new BorderPane();
+
+        try {
+
+            Scene scene = new Scene(root,1000,700);
+            scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("SimClus");
+            primaryStage.show();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        root.setCenter(new RootLayout());
     }
+
 
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
