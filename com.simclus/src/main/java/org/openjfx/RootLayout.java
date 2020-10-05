@@ -138,7 +138,7 @@ public class RootLayout extends AnchorPane {
                 //convert the mouse coordinates to scene coordinates,
                 //then convert back to coordinates that are relative to
                 //the parent of mDragIcon.  Since mDragIcon is a child of the root
-                //pane, coodinates must be in the root pane's coordinate system to work
+                //pane, coordinates must be in the root pane's coordinate system to work
                 //properly.
                 mDragOverIcon.relocateToPoint(
                         new Point2D(event.getSceneX(), event.getSceneY())
@@ -183,17 +183,25 @@ public class RootLayout extends AnchorPane {
                 if (container != null) {
                     if (container.getValue("scene_coords") != null) {
 
-                        DragIcon droppedIcon = new DragIcon();
+                        DraggableNode node = new DraggableNode();
 
-                        droppedIcon.setType(DragIconType.valueOf(container.getValue("type")));
-                        design_pane.getChildren().add(droppedIcon);
+                        node.setType(DragIconType.valueOf(container.getValue("type")));
+                        design_pane.getChildren().add(node);
 
                         Point2D cursorPoint = container.getValue("scene_coords");
 
-                        droppedIcon.relocateToPoint(
+                        node.relocateToPoint(
                                 new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
                         );
                     }
+                }
+
+                container =
+                        (DragContainer) event.getDragboard().getContent(DragContainer.DragNode);
+
+                if (container != null) {
+                    if (container.getValue("type") != null)
+                        System.out.println ("Moved node " + container.getValue("type"));
                 }
 
                 event.consume();

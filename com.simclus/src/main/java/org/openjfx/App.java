@@ -21,11 +21,6 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        /*scene = new Scene(loadFXML("testview"));
-        stage.setScene(scene);
-        stage.setTitle("Test");
-        stage.show();*/
-
         BorderPane root = new BorderPane();
 
         try {

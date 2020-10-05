@@ -16,6 +16,8 @@ public class DragContainer implements Serializable {
 
     public static final DataFormat AddNode =
             new DataFormat("org.openjfx.DragIcon.add");
+    public static final DataFormat DragNode =
+            new DataFormat("org.openjfx.DraggableNode.drag");
 
     private final List <Pair<String, Object> > mDataPairs = new ArrayList <Pair<String, Object> > ();
 
