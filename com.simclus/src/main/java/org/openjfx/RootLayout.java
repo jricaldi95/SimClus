@@ -1,10 +1,13 @@
 package org.openjfx;
 
+import java.io.IOException;
+
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -183,27 +186,79 @@ public class RootLayout extends AnchorPane {
                 if (container != null) {
                     if (container.getValue("scene_coords") != null) {
 
-                        DraggableNode node = new DraggableNode();
+                        if (container.getValue("type").equals(DragIconType.cubic_curve.toString())) {
+                            CubicCurveDemo curve = new CubicCurveDemo();
 
-                        node.setType(DragIconType.valueOf(container.getValue("type")));
-                        design_pane.getChildren().add(node);
+                            design_pane.getChildren().add(curve);
 
-                        Point2D cursorPoint = container.getValue("scene_coords");
+                            Point2D cursorPoint = container.getValue("scene_coords");
 
-                        node.relocateToPoint(
-                                new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
-                        );
+                            curve.relocateToPoint(
+                                    new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
+                            );
+                        }
+                        else {
+
+                            DraggableNode node = new DraggableNode();
+
+                            node.setType(DragIconType.valueOf(container.getValue("type")));
+                            design_pane.getChildren().add(node);
+
+                            Point2D cursorPoint = container.getValue("scene_coords");
+
+                            node.relocateToPoint(
+                                    new Point2D(cursorPoint.getX() - 32, cursorPoint.getY() - 32)
+                            );
+                        }
                     }
                 }
 
-                container =
+                /*container =
                         (DragContainer) event.getDragboard().getContent(DragContainer.DragNode);
 
                 if (container != null) {
                     if (container.getValue("type") != null)
                         System.out.println ("Moved node " + container.getValue("type"));
-                }
+                }*/
+                //AddLink drag operation
+                container =
+                        (DragContainer) event.getDragboard().getContent(DragContainer.AddLink);
 
+                if (container != null) {
+
+                    //bind the ends of our link to the nodes whose id's are stored in the drag container
+                    String sourceId = container.getValue("source");
+                    String targetId = container.getValue("target");
+
+                    if (sourceId != null && targetId != null) {
+
+                        System.out.println(container.getData());
+                        NodeLink link = new NodeLink();
+
+                        //add our link at the top of the rendering order so it's rendered first
+                        design_pane.getChildren().add(0,link);
+
+                        DraggableNode source = null;
+                        DraggableNode target = null;
+
+                        for (Node n: design_pane.getChildren()) {
+
+                            if (n.getId() == null)
+                                continue;
+
+                            if (n.getId().equals(sourceId))
+                                source = (DraggableNode) n;
+
+                            if (n.getId().equals(targetId))
+                                target = (DraggableNode) n;
+
+                        }
+
+                        if (source != null && target != null)
+                            link.bindEnds(source, target);
+                    }
+
+                }
                 event.consume();
             }
         });
